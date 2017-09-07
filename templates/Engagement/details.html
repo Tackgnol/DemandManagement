@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block custom_scripts %}
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['gantt']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function daysToMilliseconds(days) {
+      return days * 24 * 60 * 60 * 1000;
+    }
+
+    function drawChart() {
+      var source = {{SubProject.GenerateGanntValues|safe}};
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Task ID');
+      data.addColumn('string', 'Task Name');
+      data.addColumn('date', 'Start Date');
+      data.addColumn('date', 'End Date');
+      data.addColumn('number', 'Duration');
+      data.addColumn('number', 'Percent Complete');
+      data.addColumn('string', 'Dependencies');
+
+      data.addRows(source);
+
+      var options = {
+        height: 300,
+                
+        labelStyle: {
+          fontSize: 14,
+          color: '#757575'
+        },        
+      };
+
+      var chart = new google.visualization.Gantt(document.getElementById('chart_div'));
+
+      chart.draw(data, options);
+    }
+  </script>
+{% endblock custom_scripts %}
+
+{% block body_block %}
+
+    <h1> {{SubProject.Name}}</h1>
+    <h2> Project Details </h2>
+    
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td> <b> Demand Info </b></td>
+          <td>{{SubProject.Project.Name}}</td>
+          <td> <b> Spend </b> </td>
+          <td>{{SubProject.Project.Spend}}</td>
+          <td> <b> Savings </b> </td>
+          <td>{{SubProject.Project.Savings}}</td>
+          <td> <b> End Date </b></td>
+          <td>{{SubProject.Project.EndDate}}</td>
+        </tr>
+        <tr>
+          <td>
+            <b> Engagement Type </b>
+          </td>
+          <td> 
+            {{SubProject.Activity.Name}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <b> Requestor </b>
+          </td>
+          <td>
+              <b> PRID </b>
+          </td>
+          <td>
+            {{SubProject.Requestor}}
+          </td>
+          <td>
+              <b> Name </b>
+          </td>
+          <td>
+            {{SubProject.Requestor.get_full_name}}
+          </td>
+        </tr>
+        <tr>
+        <tr>
+          <td>
+            <b> Specialist </b>
+          </td>
+          <td>
+              <b> PRID </b>
+          </td>
+          <td>
+            {{SubProject.Specialist}}
+          </td>
+          <td>
+              <b> Name </b>
+          </td>
+          <td>
+            {{SubProject.Specialist.get_full_name}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <b> Status </b>
+          </td>
+          <td> 
+            {{SubProject.Status}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+
+    <h2> Project Management </h2>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Step</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Comments</th>
+
+            </tr>
+        </thead>
+        <tbody>
+                {% for pm in SubProject.projectmanagement_set.all  %}
+                <tr>
+                    <td>{{pm.Step.Name}}</td>
+                    <td>{{pm.StartDate}}</td>
+                    <td>{{pm.EndDate}}</td>
+                    <td>{{pm.Comments}}
+                </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+      <div id="chart_div"></div>
+{% endblock body_block %}

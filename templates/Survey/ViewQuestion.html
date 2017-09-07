@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+
+    
+    <div class="container">
+        
+        <h1>Question Details</h1>
+        
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <tbody>
+                    <tr>
+                        <td>Questions</td>
+                        <td>{{Question.Text}}</td>
+                    </tr>
+                    <tr>
+                        <td>Type: </td>
+                        <td>{{Question.InputType.Name}}</td>
+                    </tr>
+                    <tr>
+                        <td>Mandatory?</td>
+                        <td>{{Question.AnswerRequired}}</td>
+                    </tr>
+                    {% if Question.InputType.pk == OPTIONS %}
+                    
+                        <tr>
+                            <td>Multi Choice?</td>
+                            <td> {{Question.MultipleAnswers}} </td>
+                        </tr>
+
+                        <tr>
+                            <td rowspan="{{Question.OptionGroup.Options.all.count}}">Options:</td>
+                            {% for option in Question.OptionGroup.Options.all %}
+                                <td>{{option.Value}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tr>
+
+                    {% elif Question.InputType.pk == NUMERIC %}
+                        {% if not Question.Unit is None %}
+                            <tr>
+                                <td>Unit:</td>
+                                <td>{{Question.Unit.Name}}</td>
+                            </tr>
+                        {% endif %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        
+
+    </div>
+    
+
+{% endblock body_block %}

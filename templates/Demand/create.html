@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block custom_scripts %}
+<script>
+$(function() {
+        $( "#id_StartDate, #id_EndDate, id_LastUpadate" ).datepicker({
+                dateFormat: "yy-mm-dd",
+                defaultDate: "+1w",
+                changeMonth: true,
+                numberOfMonths: 1,
+                onClose: function( selectedDate ) {
+                        $( "#id_birth_date" ).datepicker( "option", "minDate", selectedDate );
+                }
+        });
+});
+</script>
+{% endblock custom_scripts %}
+
+{% block body_block  %}
+
+    <form method="POST">
+        {% csrf_token %}
+        
+        <table class="table table-hover">
+            {{form.as_table}}
+        </table>
+
+        <input type="Submit" name="btn-primary" value="Submit!">
+    </form>
+
+{% endblock body_block  %}

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block body_block %}
+
+    <div class="container">
+    <h1>Engagements Registered</h1>
+    
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Project</th>
+                <th>Name</th>
+                <th>Activity</th>
+                <th>Categories</th>
+                <th>Requestor</th>
+                <th>Specialist</th>
+                <th>Complexity</th>
+                <th>ForSetArea</th>
+                <th>Current Step</th>
+                <th>Type</th>
+                <th>Deadline</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subproject in SubProjects %}
+            
+            <tr>
+                <td><a href="{% url 'Engagement:Detail' pk=subproject.pk %}">{{subproject.Project.Name}}</a></td>
+                <td>{{subproject.Name}}</td>
+                <td>{{subproject.Activity}}</td>
+                <td>
+                    <ul class="list-group">
+                        {% for category in subproject.Categories.all %}    
+                            <li class="list-group-item">{{category}}</li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>{{subproject.Requestor.get_full_name}}</td>
+                <td>{{subproject.Specialist.get_full_name}}</td>
+                <td>{{subproject.Complexity}}</td>
+                <td>{{subproject.ForSetArea}}</td>
+                <td>{{subproject.Status}}</td>
+                <td>{{subproject.Type}}</td>
+                <td>{{subproject.Deadline}}</td>
+                {% if request.user == subproject.Specialist %}
+
+                    {% if subproject.Status.Name == 'Cancelled' or subproject.Status.Name == 'Suspended' or subproject.Status.Name == 'Out of scope' %}
+                    
+                    <td>
+                    <form action="{% url 'Engagement:ChangeProject' pk=subproject.pk status='Allocated' %}" method="post">
+                        {% csrf_token %}
+                            <button type="submit" title="Re-Activate">
+                                <span class="glyphicon glyphicon-play-circle"></span>
+                            </button> 
+                    </form>
+                    </td>
+                    {% else %}
+                    
+                    <td>
+                        <form action="{% url 'Engagement:NextStatus' pk=subproject.pk %}" method="post">
+                            {% csrf_token %}
+                            <input type="Submit" value="&#8679;" class="btn btn-default">
+                        </form>
+                        <form action="{% url 'Engagement:PreviousStatus' pk=subproject.pk %}" method="post">
+                            {% csrf_token %}
+                            <input type="Submit" value="&#8681;" class="btn btn-default">
+                        </form>   
+                        
+                    </td>
+                    <td>
+                        <form action="{% url 'Engagement:ChangeProject' pk=subproject.pk status='Cancelled' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" title="Cancel">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button> 
+                        </form>
+                        <form action="{% url 'Engagement:ChangeProject' pk=subproject.pk status='Suspended' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" title="Suspend">
+                                <span class="glyphicon glyphicon-time"></span>
+                            </button> 
+                        </form>
+                        <form action="{% url 'Engagement:ChangeProject' pk=subproject.pk status='Out of scope' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" title="Out of scope">
+                                <span class="glyphicon glyphicon-eye-close"></span>
+                            </button> 
+                        </form>
+                    </td>
+                    {% endif %}
+
+                {% endif %}
+
+                {% if request.user == subproject.Activity.Manager and subproject.Active == False %}
+                
+                <td>
+                  <a href="{% url 'Engagement:Activate' pk=subproject.pk %}">[Activate]</a>
+                </td>
+
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+
+
+
+</div>
+
+{% endblock body_block %}
+

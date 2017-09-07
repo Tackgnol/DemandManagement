@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block custom_scripts %}      
+
+<script>
+$(function() {
+        var selected = $("#id_InputType").val();
+        $("#AddButton").toggle(selected == '{{OPTIONS}}');
+        $("#Options").toggle(selected == '{{OPTIONS}}');
+        $('#mChoice').toggle(selected =='{{OPTIONS}}');
+    })
+
+
+$(function() {
+        $("#id_InputType").change(function () {
+            var selected = this.value
+            $("#AddButton").toggle(selected == '{{OPTIONS}}');
+            $("#Options").toggle(selected == '{{OPTIONS}}');
+            $('#mChoice').toggle(selected =='{{OPTIONS}}');
+    })
+});
+
+$(function() {
+    $("#id_InputType").change(function () {
+            var selected = this.value
+        $("#Unit").toggle(selected == '{{NUMERIC}}');
+
+    })
+});
+
+$(document).ready(function() {
+    var max_fields      = 10; //maximum input boxes allowed
+    var wrapper         = $("#OptionList"); //Fields wrapper
+    var add_button      = $("#AddButton"); //Add button ID
+    
+    var x = 1; //initlal text box count
+    $(add_button).click(function(e){ //on add input button click
+        e.preventDefault();
+        if(x < max_fields){ //max input box allowed
+            x++; //text box increment
+            $(wrapper).append('<li><input type="text" name="Options"/><a href="#" class="remove_field">Remove</a></li>'); //add input box
+        }
+    });
+    
+    $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parent('li').remove(); x--;
+    })
+});
+
+</script>
+
+{% endblock custom_scripts %}       
+
+{% block body_block %}
+
+
+<div class="container">
+    {% if Question.pk is None %}
+        <h1>Create Question</h1>
+    {% else %}
+        <h1>Update Question</h1>
+    {% endif %}
+
+    <form id="QuestionForm" method="POST">
+            {% csrf_token %}
+            
+            <table class="table table-striped table-hover">            
+                <tr>
+                    <td>Question:</td>
+                    <td>{{form.Text}}</td>
+                </tr>
+                <tr>    
+                    <td>Input Type</td>
+                    <td>{{form.InputType}}
+                        <button type="button" class="btn btn-info" id="AddButton" style="display:none">Add</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Question Section</td>
+                    <td>{{form.Section}}</td>
+                </tr>
+                <tr>
+                    <td>Answer Required?</td>
+                    <td>{{form.AnswerRequired}}</td>
+                </tr>
+                <tr id="mChoice" style="display:none">
+                    <td>Multi choice?</td>
+                    <td>{{form.MultipleAnswers}}</td>
+                </tr>
+                <tr id="Unit" style="display:none">
+                    <td>
+                        Unit:
+                    </td>
+                    <td>
+                        {{form.Unit}}
+                    </td>
+                </tr>
+                <tr id="Options" style="display:none">
+                    <td> 
+                        <p> Options: </p> 
+                    </td>
+                    <td>
+                            {% if Question.pk is None %}
+                                <ul id="OptionList" class="list-group" >
+                            
+                                </ul>
+                            {% else %}
+                                 <ul id="OptionList" class="list-group" >
+                                {% for option in Question.OptionGroup.Options.all %}
+                                    <li><input type="text" name="Options" value="{{option.Value}}" /><a href="#" class="remove_field">Remove</a></li>
+                                {% endfor %}
+                                 </ul>
+                            {% endif %}
+
+                    </td>
+                <tr>
+                    <td colspan="2" align = "center">
+                        <input type="Submit" name="btn-primary" value="Submit!">
+                    </td>
+                </tr>
+            </table>
+
+        </form>
+
+</div>
+{% endblock body_block %}

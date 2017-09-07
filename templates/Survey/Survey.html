@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+{% load SurveyExtras %}
+{% block body_block %}
+    
+    <div class="container">
+        <h1>{{Survey.Name}}</h1>
+
+        {% if request.user == Survey.Respondent %}
+        
+            <form method="POST">
+            {% csrf_token %}
+            {% for question in Survey.QuestionSet.Questions.all  %}
+            
+                
+                <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
+                    
+                    <div class="row">
+                        
+                        <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11">
+                            <h3>{{question.Text}}</h3>
+                        </div>
+                        
+                    </div>
+                    
+
+                
+                
+                {% if question.InputType.pk == OPTIONS %}
+                
+                    {% with input_type=question.MultipleAnswers|input_type message=question.MultipleAnswers|message %}
+                    
+
+                        <div class="row">
+                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                <p class="center-block">{{message}}</p>
+                            </div> 
+                            
+                            <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+                            {% for option in question.OptionGroup.Options.all %}
+                                    
+                                    <div class="row">
+                                        
+                                        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                            <input id="{{option.pk}}" type="{{input_type}}" name="{{question.pk}}" value="{{option.Value}}" 
+                                            {% for answer in view.Answers %}
+                                                {% if answer.Question.pk == question.pk %}
+                                                    {% if option in answer.Options.all %}
+                                                        checked
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %} 
+                                            />
+                                        </div>
+                                        
+                                        <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                                            <label for="{{option.pk}}">{{option.Value}}</label>
+                                        </div>
+                                        
+                                    </div>
+                                    
+                            {% endfor %} 
+                            
+                            
+                            </div>     
+                        </div>           
+                    {% endwith %}
+                {% elif question.InputType.pk == TEXT %}
+
+                    <div class="row">
+                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                            <p>Specify your answer here:</p>
+                        </div> 
+                        
+                        <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+                        
+                            <textarea name="{{question.pk}}" class="form-control" rows=5 >{% for answer in view.Answers %}{% if answer.Question.pk == question.pk %}{{answer.Text}}{% endif %}{% endfor %}</textarea>
+                                    
+                        </div>
+
+                    </div>                                
+                {% elif question.InputType.pk == BOOL %}
+
+                    <div class="row">
+                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                            <p>True/False question <br> Select one:</p>
+                        </div> 
+                        
+                        <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+                        
+                            <div class="row">
+                                
+                                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                    <input id="{{question.pk}} TRUE" type="radio" name="{{question.pk}}" {% for answer in view.Answers %}{% if answer.Question.pk == question.pk %}{% if answer.Bool %}checked{% endif %}{% endif %}{% endfor %} value=1 />
+                                </div>
+                                
+                                <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                                    <label for="{{question.pk}} TRUE">Yes</label>
+                                </div>
+                                
+                            </div>
+                            <div class="row">
+                                
+                                <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                                    <input id="{{question.pk}} False" type="radio" name="{{question.pk}}" {% for answer in view.Answers %}{% if answer.Question.pk == question.pk %}{% if not answer.Bool %}checked{% endif %}{% endif %}{% endfor %} value=0 />
+                                </div>
+                                
+                                <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+                                    <label for="{{question.pk}} False">No</label>
+                                </div>
+                                
+                            </div>                                
+                        </div>
+                    </div>   
+                {% elif question.InputType.pk == NUMERIC %}
+
+                    <div class="row">
+                        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                            <p>Specify your answer here:</p>
+                        </div> 
+                        
+                        <div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+                        
+                            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                <input type="number" name="{{question.pk}}" value={% for answer in view.Answers %}{% if answer.Question.pk == question.pk %}{{answer.Numeric}}{% endif %}{% endfor %}>
+                            </div>
+                            
+                            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                                <p>{{question.Unit.Name}}</p>
+                            </div>
+                            
+                                
+                        </div>
+
+                    </div>                                
+
+                {% endif %}
+            </div>
+            {% endfor %}
+            
+            <div class="row">
+                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                    <input type="Submit" value="Post Results"/>   
+                </div>         
+            </div>
+
+            </form>
+        {% else %}
+            
+            <div class="jumbotron">
+                <div class="container">
+                    <h2>Hey... you are not supposed to be here!</h2>
+                    <img src="http://clipartview.com/wp-content/uploads/2017/03/policeman-stop-clipart.png" height="200opx">
+                    <p>this Survey is to be filled in by: {{Survey.Respondent.get_full_name}}</p>
+                    <p>
+                        <a class="btn btn-primary btn-lg" href="{% url 'Demand:Index' %}">Scoot along now, back to homepage with ya...</a>
+                    </p>
+                </div>
+            </div>
+            
+        {% endif %}
+    </div>
+{% endblock body_block  %}

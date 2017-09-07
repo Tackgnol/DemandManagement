@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block custom_scripts %} 
+
+
+
+{% endblock%}
+
+{% block body_block %}
+
+    
+    <div class="container">
+      
+       
+       <form method="POST">
+           {% csrf_token %}
+           <legend>Create a survey</legend>
+            {% if messages %}
+            <ul class="bg-danger">
+                {% for message in messages %}
+                <li{% if message.tags %} class="bg-danger"{% endif %}>
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                    {{ message }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+           <div class="form-group">
+
+               <label for="id_Name">Survey name</label>
+               {{form.Name}}
+               <label for="id_DefaultFor">Default survey for:</label>
+               {{form.DefaultFor}}
+           </div>
+       
+        <button type="submit" class="btn btn-primary">Create a Survey Model</button>
+
+        <h1>Questions registed in the system</h1>
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th>Add?</th>
+                    <th>Type:</th>
+                    <th>Question:</th>
+                    <th>Mandatory</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for question in view.Questions %}
+                <tr>
+                    <td><input id="q{{question.pk}}" type="checkbox" name="selectedQuestions" value="{{question.pk}}"></td>
+                    <td>{{question.InputType.Name}}</td>
+                    <td>{{question.Text}}</td>
+                    <td>{{question.AnswerRequired}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+       </form> 
+    </div>
+    
+
+{% endblock body_block %}

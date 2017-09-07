@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+
+    <div class="container">
+        
+        <table class="table table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th>Engagement:</th>
+                    <th>Question Set</th>
+                    <th>Progress</th>
+                    <th>Partake</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for survey in Surveys %}
+                    <tr>
+                        <td>{{survey.Engagement.Name}}</td>
+                        <td>{{survey.QuestionSet.Name}}</td>
+                        <td>{{survey.answer_set.count}}/{{survey.QuestionSet.Questions.count}}</td>
+                        <td><a href="{% url 'Survey:Survey' pk=survey.pk %}">[Fill in]</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </div>    
+
+{% endblock body_block %}
+

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Demand Management</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Latest compiled and minified CSS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+        {% block custom_scripts %}
+        
+        {% endblock custom_scripts %}
+
+    </head>
+    <body>
+    
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                <a class="navbar-brand" href="{% url 'Demand:Index' %}">GPS Demand Management</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="{% url 'Demand:Index' %}">Home</a></li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Engagements
+                        <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'Engagement:Index' %}">All Engagements</a></li>
+                            <li><a href="{% url 'Engagement:MyProjects' %}">My Engagements</a></li>
+                            {% if user.is_authenticated %}
+                                {% if IsManager %}
+                                    <li><a href="{% url 'Engagement:Inactive' %}">Activate Engagements</a></li>   
+                                {% endif %}
+                            {% endif %}
+                        </ul>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Survey
+                        <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'Survey:Index' %}">Index Surveys</a>
+                            <li><a href="{% url 'Survey:NewSurvey' %}">Create a Question Set</a></li>
+                            <li><a href="{% url 'Survey:Questions' %}">View all questions</a></li>
+                        </ul>
+                    </li>
+                <ul class="nav navbar-nav navbar-right">
+                    
+                        {% if user.is_authenticated %}
+                            <li><a href=#>Hello {{user.get_full_name}}</a></li>
+                            <li><a href={% url 'logout' %}>Log off</a></li>
+                        {% else %}
+                            <li>Hello Stranger </li>
+                        {% endif %}
+                        
+                    </li>
+                    
+                </ul>
+                 {% if user.is_authenticated %}
+                    {% if user.is_superuser %}
+                        <li><a href="{% url 'admin:index' %}">Admin</a></li>
+                    {% endif %}
+                 {% endif %}
+                </ul>
+            </div>
+            
+        </nav>
+        {% block body_block %}
+            
+        {% endblock body_block %}
+    </body>
+</html>
