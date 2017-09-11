@@ -40,104 +40,178 @@
 {% endblock custom_scripts %}
 
 {% block body_block %}
-
+  
+  <div class="container">
+    
+  
+  
     <h1> {{SubProject.Name}}</h1>
     <h2> Project Details </h2>
-    
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th>Field</th>
-          <th>Details</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td> <b> Demand Info </b></td>
-          <td>{{SubProject.Project.Name}}</td>
-          <td> <b> Spend </b> </td>
-          <td>{{SubProject.Project.Spend}}</td>
-          <td> <b> Savings </b> </td>
-          <td>{{SubProject.Project.Savings}}</td>
-          <td> <b> End Date </b></td>
-          <td>{{SubProject.Project.EndDate}}</td>
-        </tr>
-        <tr>
-          <td>
-            <b> Engagement Type </b>
-          </td>
-          <td> 
-            {{SubProject.Activity.Name}}
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <b> Requestor </b>
-          </td>
-          <td>
-              <b> PRID </b>
-          </td>
-          <td>
-            {{SubProject.Requestor}}
-          </td>
-          <td>
-              <b> Name </b>
-          </td>
-          <td>
-            {{SubProject.Requestor.get_full_name}}
-          </td>
-        </tr>
-        <tr>
-        <tr>
-          <td>
-            <b> Specialist </b>
-          </td>
-          <td>
-              <b> PRID </b>
-          </td>
-          <td>
-            {{SubProject.Specialist}}
-          </td>
-          <td>
-              <b> Name </b>
-          </td>
-          <td>
-            {{SubProject.Specialist.get_full_name}}
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <b> Status </b>
-          </td>
-          <td> 
-            {{SubProject.Status}}
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    
-
-    <h2> Project Management </h2>
-    <table class="table table-hover">
-        <thead>
+    <ul class="nav nav-tabs">
+      <li class="active">
+        <a href="#Home" data-toggle="tab">Project Details</a>
+      </li>
+      <li>
+        <a href="#Notes" data-toggle="tab">Notes</a>
+      </li>
+      <li>
+        <a href="#Log" data-toggle="tab">Event Log</a>
+      </li>
+    </ul>    
+    <div class="tab-content">
+      <div id="Home" class="tab-pane fade in active">
+        <table class="table table-hover">
+          <thead>
             <tr>
-                <th>Step</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Comments</th>
-
+              <th>Field</th>
+              <th>Details</th>
             </tr>
-        </thead>
-        <tbody>
-                {% for pm in SubProject.projectmanagement_set.all  %}
+          </thead>
+          <tbody>
+            <tr>
+              <td> <b> Demand Info </b></td>
+              <td>{{SubProject.Project.Name}}</td>
+              <td> <b> Spend </b> </td>
+              <td>{{SubProject.Project.Spend}}</td>
+              <td> <b> Savings </b> </td>
+              <td>{{SubProject.Project.Savings}}</td>
+              <td> <b> End Date </b></td>
+              <td>{{SubProject.Project.EndDate}}</td>
+            </tr>
+            <tr>
+              <td>
+                <b> Engagement Type </b>
+              </td>
+              <td> 
+                {{SubProject.Activity.Name}}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <b> Requestor </b>
+              </td>
+              <td>
+                  <b> PRID </b>
+              </td>
+              <td>
+                {{SubProject.Requestor}}
+              </td>
+              <td>
+                  <b> Name </b>
+              </td>
+              <td>
+                {{SubProject.Requestor.get_full_name}}
+              </td>
+            </tr>
+            <tr>
+            <tr>
+              <td>
+                <b> Specialist </b>
+              </td>
+              <td>
+                  <b> PRID </b>
+              </td>
+              <td>
+                {{SubProject.Specialist}}
+              </td>
+              <td>
+                  <b> Name </b>
+              </td>
+              <td>
+                {{SubProject.Specialist.get_full_name}}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <b> Status </b>
+              </td>
+              <td> 
+                {{SubProject.Status}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+
+        <h2> Project Management </h2>
+        <table class="table table-hover">
+            <thead>
                 <tr>
-                    <td>{{pm.Step.Name}}</td>
-                    <td>{{pm.StartDate}}</td>
-                    <td>{{pm.EndDate}}</td>
-                    <td>{{pm.Comments}}
+                    <th>Step</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Comments</th>
+
                 </tr>
-                {% endfor %}
-        </tbody>
-    </table>
-      <div id="chart_div"></div>
+            </thead>
+            <tbody>
+                    {% for pm in SubProject.projectmanagement_set.all  %}
+                    <tr>
+                        <td>{{pm.Step.Name}}</td>
+                        <td>{{pm.StartDate}}</td>
+                        <td>{{pm.EndDate}}</td>
+                        <td>{{pm.Comments}}
+                    </tr>
+                    {% endfor %}
+            </tbody>
+        </table>
+        <div id="chart_div"></div>
+      </div>
+      <div class="tab-pane fade" id="Notes"> 
+        <h1> Notes</h1>
+        
+        <form action="{% url 'Engagement:AddNote' pk=SubProject.pk %}" method="POST">
+          {% csrf_token %}
+          <legend>New note</legend>
+          
+          <div class="form-group">
+            
+            <textarea name="Note" id="Note" class="form-control" rows="4" required="required" placeholder="Specify your note here, only you can see this."></textarea>
+            
+          </div>
+
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <h2> Current Notes: </h2>      
+        {% for note in SubProject.note_set.all %}
+
+          <form action="{% url 'Engagement:DeleteNote' pk=note.pk %}" method="POST">
+            {% csrf_token %}
+              <h4>
+                {{note.CreatedDate}}
+              
+                <button type="submit" class="btn btn-danger">Delete</button>
+              </h4>
+          </form>
+            
+          <div class="well">
+            <p> {{note.Text}}</p>
+          </div>
+        {% endfor %}
+      </div>
+      <div id="Log" class="tab-pane fade">
+        <h1>Action Log:</h1>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Action time</th>
+              <th>User</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for log in SubProject.eventlog_set.all  %}
+              <tr>
+                <td>{{log.CreatedDate}}</td>
+                <td>{{log.By.get_full_name}}</td>
+                <td>{{log.Action}}</td>
+              </tr>            
+            {% endfor %}
+
+          </tbody>
+        </table>
+        
+      </div>
+    </div>  
+  </div>
 {% endblock body_block %}

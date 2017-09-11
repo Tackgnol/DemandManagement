@@ -1,7 +1,8 @@
 from django.views.generic import ListView, DetailView, TemplateView, UpdateView
 from django.shortcuts import get_object_or_404, redirect, reverse
-from Engagement.models import SubProject, SubStatus, Activity
+from Engagement.models import SubProject, SubStatus, Activity, Note, EventLog
 from django.contrib.auth.models import User
+from .forms import DeleteNoteForm 
 
 # Create your views here.
 
@@ -57,11 +58,27 @@ class SubprojectActivate(UpdateView):
     )
     success_url="/Engagement/Inactive/"
     context_object_name = 'SubProject'
-
+    
 class SubProjectDetailView(DetailView):
     model = SubProject
     template_name= 'Engagement/details.html'
     context_object_name = 'SubProject'
+
+def AddNote(request, pk):
+    thisProject = get_object_or_404(SubProject, pk=pk)
+    newNote = Note(Engagement=thisProject, Text=request.POST['Note'])
+    newNote.save()
+    return redirect(request.META['HTTP_REFERER'])
+
+def DeleteNote(request, pk):
+    
+    thisNote = get_object_or_404(Note, pk=pk)
+    form = DeleteNoteForm(request.POST, instance=thisNote)
+    if request.method == 'POST':
+        if form.is_valid():
+            thisNote.delete()
+            return redirect(request.META['HTTP_REFERER'])
+    return redirect('/Engagement/')
 
 def NextStatus(request, pk):
     thisProject = get_object_or_404(SubProject, pk=pk)
@@ -69,6 +86,8 @@ def NextStatus(request, pk):
     if projectStatus >= 1 and projectStatus < 3:
         thisProject.Status = get_object_or_404(SubStatus, pk=projectStatus+1)
         thisProject.save()
+        newLog = EventLog(Engagement=thisProject, By=request.user, Action="Uplifeted the status to: " + str(thisProject.Status))
+        newLog.save()
     return redirect(request.META['HTTP_REFERER'])
 
 
@@ -78,10 +97,14 @@ def PreviousStatus(request, pk):
     if projectStatus > 1 and projectStatus <= 3:
         thisProject.Status = get_object_or_404(SubStatus, pk=projectStatus-1)
         thisProject.save()
+        newLog = EventLog(Engagement=thisProject, By=request.user, Action="Downgraded the status to: " + str(thisProject.Status))
+        newLog.save()
     return redirect(request.META['HTTP_REFERER'])
 
 def ChangeProjectStauts(request, pk, status):
     thisProject = get_object_or_404(SubProject, pk=pk)
     thisProject.Status = GetSubStatus(status) 
     thisProject.save()
+    newLog = EventLog(Engagement=thisProject, By=request.user, Action="Changed the status to: " + str(thisProject.Status))
+    newLog.save()
     return redirect(request.META['HTTP_REFERER'])

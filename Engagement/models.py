@@ -141,3 +141,13 @@ class ProjectManagement(models.Model):
         return self.Step.Name 
     
 
+class Note(models.Model):
+    CreatedDate = models.DateTimeField(auto_now_add=True)
+    Engagement = models.ForeignKey(SubProject)
+    Text = models.TextField(max_length=10000)
+
+class EventLog(models.Model):
+    CreatedDate = models.DateTimeField(auto_now_add=True)
+    By = models.ForeignKey(User)
+    Action = models.TextField(max_length=256)
+    Engagement = models.ForeignKey(SubProject)

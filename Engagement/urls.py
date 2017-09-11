@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from views import  SubProjectListView, SubProjectDetailView, SubProjectMyListView, NextStatus, PreviousStatus, SubProjectMyInactive, SubprojectActivate, ChangeProjectStauts
+from views import  SubProjectListView, SubProjectDetailView, SubProjectMyListView, NextStatus, PreviousStatus, SubProjectMyInactive, SubprojectActivate, ChangeProjectStauts, AddNote, DeleteNote
 app_name = 'Engagement'
 
 urlpatterns = [
@@ -10,6 +10,8 @@ urlpatterns = [
     url(r'^Activate/(?P<pk>\d+)/$', SubprojectActivate.as_view(), name='Activate'),
     url(r'^NextStatus/(?P<pk>\d+)/$', NextStatus, name='NextStatus'),
     url(r'^PreviousStatus/(?P<pk>\d+)/$', PreviousStatus, name='PreviousStatus'),
-    url(r'^ReactivateProject/(?P<pk>\d+)/(?P<status>[\w ]+)/$', ChangeProjectStauts, name='ChangeProject'),    
+    url(r'^ReactivateProject/(?P<pk>\d+)/(?P<status>[\w ]+)/$', ChangeProjectStauts, name='ChangeProject'),
+    url(r'^NewNote/(?P<pk>\d+)/$', AddNote, name='AddNote'),
+    url(r'^DeleteNote/(?P<pk>\d+)/$', DeleteNote, name='DeleteNote'),
 ]
 
