@@ -16,7 +16,7 @@
 
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
+        <link href="https://fonts.googleapis.com/css?family=Raleway:400,700,800&amp;subset=latin-ext" rel="stylesheet">
         {% block custom_scripts %}
         
         {% endblock custom_scripts %}
@@ -25,51 +25,58 @@
     <body>
     
         <nav class="navbar navbar-default">
-            <div class="container-fluid">
+            <div class="container">
                 <div class="navbar-header">
-                <a class="navbar-brand" href="{% url 'Demand:Index' %}">GPS Demand Management</a>
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{% url 'Welcome' %}">GPS Demand Management</a>
                 </div>
-                <ul class="nav navbar-nav">
-                    <li class="active"><a href="{% url 'Demand:Index' %}">Home</a></li>
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Engagements
-                        <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{% url 'Engagement:Index' %}">All Engagements</a></li>
-                            <li><a href="{% url 'Engagement:MyProjects' %}">My Engagements</a></li>
-                            {% if user.is_authenticated %}
-                                {% if IsManager %}
-                                    <li><a href="{% url 'Engagement:Inactive' %}">Activate Engagements</a></li>   
+                <div class="collapse navbar-collapse" id="main-navbar">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="{% url 'Demand:Index' %}">Demand</a></li>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Engagements
+                            <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{% url 'Engagement:Index' %}">All Engagements</a></li>
+                                <li><a href="{% url 'Engagement:MyProjects' %}">My Engagements</a></li>
+                                {% if user.is_authenticated %}
+                                    {% if IsManager %}
+                                        <li><a href="{% url 'Engagement:Inactive' %}">Activate Engagements</a></li>   
+                                    {% endif %}
                                 {% endif %}
-                            {% endif %}
-                        </ul>
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Survey
-                        <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="{% url 'Survey:Index' %}">Index Surveys</a>
-                            <li><a href="{% url 'Survey:NewSurvey' %}">Create a Question Set</a></li>
-                            <li><a href="{% url 'Survey:Questions' %}">View all questions</a></li>
-                        </ul>
-                    </li>
-                <ul class="nav navbar-nav navbar-right">
-                    
+                            </ul>
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Survey
+                            <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{% url 'Survey:Index' %}">Index Surveys</a>
+                                <li><a href="{% url 'Survey:NewSurvey' %}">Create a Question Set</a></li>
+                                <li><a href="{% url 'Survey:Questions' %}">View all questions</a></li>
+                            </ul>
+                        </li>
                         {% if user.is_authenticated %}
-                            <li><a href=#>Hello {{user.get_full_name}}</a></li>
-                            <li><a href={% url 'logout' %}>Log off</a></li>
-                        {% else %}
-                            <li>Hello Stranger </li>
+                            {% if user.is_superuser %}
+                                <li><a href="{% url 'admin:index' %}">Admin</a></li>
+                            {% endif %}
                         {% endif %}
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
                         
-                    </li>
-                    
-                </ul>
-                 {% if user.is_authenticated %}
-                    {% if user.is_superuser %}
-                        <li><a href="{% url 'admin:index' %}">Admin</a></li>
-                    {% endif %}
-                 {% endif %}
-                </ul>
+                            {% if user.is_authenticated %}
+                                <li><a href=#>Hello {{user.get_full_name}}</a></li>
+                                <li><a href={% url 'logout' %}>Log off</a></li>
+                            {% else %}
+                                <li>Hello Stranger </li>
+                            {% endif %}
+                            
+                        
+                    </ul>
+                </div>
             </div>
             
         </nav>
