@@ -17,10 +17,13 @@
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
         <link href="https://fonts.googleapis.com/css?family=Raleway:400,700,800&amp;subset=latin-ext" rel="stylesheet">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
         {% block custom_scripts %}
         
         {% endblock custom_scripts %}
-
+        {% block custom_css %}
+        
+        {% endblock custom_css %}
     </head>
     <body>
     
@@ -37,9 +40,17 @@
                 </div>
                 <div class="collapse navbar-collapse" id="main-navbar">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="{% url 'Demand:Index' %}">Demand</a></li>
+                        <li class="active">
+                            
+                            <a href="{% url 'Demand:Index' %}">
+                                <i class="fa fa-cube" aria-hidden="true"></i>
+                                Demand
+                            </a>
+                        </li>
                         <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Engagements
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-cubes" aria-hidden="true"></i>
+                                Engagements
                             <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href="{% url 'Engagement:Index' %}">All Engagements</a></li>
@@ -51,7 +62,9 @@
                                 {% endif %}
                             </ul>
                         <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Survey
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+                                Survey
                             <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a href="{% url 'Survey:Index' %}">Index Surveys</a>
@@ -68,10 +81,10 @@
                     <ul class="nav navbar-nav navbar-right">
                         
                             {% if user.is_authenticated %}
-                                <li><a href=#>Hello {{user.get_full_name}}</a></li>
-                                <li><a href={% url 'logout' %}>Log off</a></li>
+                                <li><a href=#>Hello {{user.get_full_name}} <i class="fa fa-user-circle" aria-hidden="true"></i></a></li>
+                                <li><a href={% url 'logout' %}>Log off <i class="fa fa-sign-out" aria-hidden="true"></i></a></li>
                             {% else %}
-                                <li>Hello Stranger </li>
+                                <li>Hello Stranger <i class="fa fa-user-circle" aria-hidden="true"></i> </li>
                             {% endif %}
                             
                         

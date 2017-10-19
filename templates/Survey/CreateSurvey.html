@@ -1,10 +1,10 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% block custom_css %}
 
-{% block custom_scripts %} 
+        <link rel="stylesheet" href="{% static 'CSS/Survey/Questions.css' %}">
 
-
-
-{% endblock%}
+{% endblock custom_css %}
 
 {% block body_block %}
 
@@ -51,7 +51,13 @@
                     <td><input id="q{{question.pk}}" type="checkbox" name="selectedQuestions" value="{{question.pk}}"></td>
                     <td>{{question.InputType.Name}}</td>
                     <td>{{question.Text}}</td>
-                    <td>{{question.AnswerRequired}}</td>
+                    <td class="icon">
+                        {% if question.AnswerRequired %}
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        {% else %}
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        {% endif %} 
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

@@ -22,7 +22,6 @@
       data.addColumn('string', 'Dependencies');
 
       data.addRows(source);
-
       var options = {
         height: 300,
                 
@@ -51,9 +50,11 @@
       <li class="active">
         <a href="#Home" data-toggle="tab">Project Details</a>
       </li>
-      <li>
-        <a href="#Notes" data-toggle="tab">Notes</a>
-      </li>
+      {% if user.pk == SubProject.Specialist.pk  %}
+        <li>
+          <a href="#Notes" data-toggle="tab">Notes</a>
+        </li>
+      {% endif%}
       <li>
         <a href="#Log" data-toggle="tab">Event Log</a>
       </li>
@@ -157,38 +158,42 @@
         </table>
         <div id="chart_div"></div>
       </div>
-      <div class="tab-pane fade" id="Notes"> 
-        <h1> Notes</h1>
-        
-        <form action="{% url 'Engagement:AddNote' pk=SubProject.pk %}" method="POST">
-          {% csrf_token %}
-          <legend>New note</legend>
+      {% if user.pk == SubProject.Specialist.pk  %}
+
+        <div class="tab-pane fade" id="Notes"> 
+          <h1> Notes</h1>
           
-          <div class="form-group">
-            
-            <textarea name="Note" id="Note" class="form-control" rows="4" required="required" placeholder="Specify your note here, only you can see this."></textarea>
-            
-          </div>
-
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-        <h2> Current Notes: </h2>      
-        {% for note in SubProject.note_set.all %}
-
-          <form action="{% url 'Engagement:DeleteNote' pk=note.pk %}" method="POST">
+          <form action="{% url 'Engagement:AddNote' pk=SubProject.pk %}" method="POST">
             {% csrf_token %}
-              <h4>
-                {{note.CreatedDate}}
-              
-                <button type="submit" class="btn btn-danger">Delete</button>
-              </h4>
-          </form>
+            <legend>New note</legend>
             
-          <div class="well">
-            <p> {{note.Text}}</p>
-          </div>
-        {% endfor %}
-      </div>
+            <div class="form-group">
+              
+              <textarea name="Note" id="Note" class="form-control" rows="4" required="required" placeholder="Specify your note here, only you can see this."></textarea>
+              
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+          <h2> Current Notes: </h2>      
+          {% for note in SubProject.note_set.all %}
+
+            <form action="{% url 'Engagement:DeleteNote' pk=note.pk %}" method="POST">
+              {% csrf_token %}
+                <h4>
+                  {{note.CreatedDate}}
+                
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </h4>
+            </form>
+              
+            <div class="well">
+              <p> {{note.Text}}</p>
+            </div>
+          {% endfor %}
+        
+        </div>
+      {% endif %}
       <div id="Log" class="tab-pane fade">
         <h1>Action Log:</h1>
         <table class="table table-hover">
@@ -210,7 +215,7 @@
 
           </tbody>
         </table>
-        
+        {{SubProject.GenerateGanttJSON}}
       </div>
     </div>  
   </div>

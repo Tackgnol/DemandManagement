@@ -1,5 +1,10 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% block custom_css %}
 
+        <link rel="stylesheet" href="{% static 'CSS/Survey/Questions.css' %}">
+
+{% endblock custom_css %}
 
 {% block body_block %}
 
@@ -20,7 +25,13 @@
                 <tr>
                     <td>{{question.InputType.Name}}</td>
                     <td>{{question.Text}}</td>
-                    <td>{{question.AnswerRequired}}</td>
+                    <td class="icon">
+                        {% if question.AnswerRequired %}
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        {% else %}
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        {% endif %} 
+                    </td>
                     <td><a href="{% url 'Survey:Details' pk=question.pk %}">Details</a></td>
                     <td><a href="{% url 'Survey:Edit' pk=question.pk %}">Edit</a></td>
                     <td><a href="#">Delete</a></td>

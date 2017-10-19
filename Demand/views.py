@@ -82,7 +82,7 @@ class DemandCreateView(CreateView):
         #Saving the form for it to have a PK so I can assign it to its children
         formParent = form.instance.pk
         for activity in self.request.POST.getlist('Activities'):
-            SB = SubProject(Name='[' + form.instance.Name + ']' + GetActivity(activity).Name, Active=False, Activity=GetActivity(activity), Project = GetProject(formParent), Requestor=form.instance.Owner, Step=GetStep(1), Deadline=formEndDate, Status=GetSubStatus(1))
+            SB = SubProject(Name='[' + form.instance.Name + '] ' + GetActivity(activity).Name, Active=False, Activity=GetActivity(activity), Project = GetProject(formParent), Requestor=form.instance.Owner, Step=GetStep(1), Deadline=formEndDate, Status=GetSubStatus(1))
             SB.save()
             for category in self.request.POST.getlist('Categories'):
                 SB.Categories.add(GetCategory(category))

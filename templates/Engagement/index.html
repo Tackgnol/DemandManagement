@@ -1,17 +1,25 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% block custom_css %}
+    <link rel="stylesheet" href="{% static 'CSS/Engagement/Engagements.css' %}">
+{% endblock custom_css %}
 {% block body_block %}
 
     
-    <div class="jumbotron" style="background-color: rgb(0,56,101); margin-bottom:0px;">
-        <h1 style="text-align: left; margin-left:2%; color:white; font-family: 'Raleway', sans-serif; font-weight:700">Engagements Registered</h1>
+    <div class="jumbotron">
+        
+        <h1 class="jumbo">
+            <i class="fa fa-cubes" aria-hidden="true"></i>
+            Engagements Registered
+        </h1>
         <p></p>
     </div>
     
-    <div style="margin:0px 5px">
+    <div class="table">
 
-        <table class="table table-hover table-striped" >
-            <thead  style="background-color:rgb(60,16,83); font-family: 'Raleway', sans-serif; text-align:center;" >
-                <tr style="color:white;">
+        <table id="engagements" class="table table-hover table-striped" >
+            <thead>
+                <tr>
                     <th>Demand</th>
                     <th>Project Name</th>
                     <th>Team</th>
@@ -25,14 +33,14 @@
                     <th colspan="3">Deadline</th>
                 </tr>
             </thead>
-            <tbody style="text-align:center; vertical-align:middle;">
+            <tbody>
                 {% for subproject in SubProjects %}
                 
                 <tr>
-                    <td><a href="{% url 'Engagement:Detail' pk=subproject.pk %}">{{subproject.Project.Name}}</a></td>
-                    <td>{{subproject.Name}}</td>
+                    <td>{{subproject.Project.Name}}</td>
+                    <td><a href="{% url 'Engagement:Detail' pk=subproject.pk %}">{{subproject.Name}}</a></td>
                     <td>{{subproject.Activity}}</td>
-                    <td style="text-align:left;">
+                    <td class="toLeft">
                         <ul class="list-group">
                             {% for category in subproject.Categories.all %}    
                                 <li class="list-group-item">{{category}}</li>
@@ -92,6 +100,10 @@
                             </form>
                         </td>
                         {% endif %}
+                    {% else %}
+
+                        <td></td>
+                        <td></td>
 
                     {% endif %}
 

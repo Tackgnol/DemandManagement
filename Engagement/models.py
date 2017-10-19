@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.contrib.auth.models import User
 from django.db import models
+from django.core import serializers
 from Demand.models import Category, BusinessPriority, Activity, Project
 from collections import OrderedDict
 from itertools import chain
@@ -124,6 +125,10 @@ class SubProject(models.Model):
         output = output.decode()
         output = output.encode(encoding='utf8')
         return output
+    def GenerateGanttJSON(self):
+        phases = self.projectmanagement_set.all()
+        data = serializers.serialize('json', phases)
+        return data
         
 # Create your models here.
 class ProjectManagement(models.Model):
